@@ -1,5 +1,7 @@
 # 🏗️ Control de costos por obra
 
+![Pruebas](https://github.com/Kooovi/Gameproject/actions/workflows/pruebas.yml/badge.svg)
+
 Herramienta web para constructoras pequeñas que compara el **presupuesto** contra el
 **gasto real** de cada obra, partida por partida, y avisa cuáles se están pasando.
 
