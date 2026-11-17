@@ -29,6 +29,8 @@ avance y proyecta cuánto costará al terminar.
   borrar gastos y tabla para actualizar el avance de las partidas, sin volver a subir el Excel.
 - **Salidas a Excel**: reporte de una obra (resumen, partidas y gastos) y respaldo completo
   de los datos, que se puede volver a cargar.
+- **Resumen de alertas**: un script arma un mensaje corto con las obras que van mal, listo
+  para WhatsApp o correo, y se puede programar para que corra solo.
 - **Gastos sin presupuestar**: si aparece un gasto en una partida que no estaba en el
   presupuesto, lo carga con presupuesto 0 y lo marca en rojo.
 
@@ -78,14 +80,17 @@ costos/
   db.py               Conexión y ejecución de consultas
   calculos.py         Indicadores (pandas)
   importar.py         Excel -> validación -> base de datos
-  registro.py         Registrar un gasto y actualizar avances
+  registro.py         Registrar, corregir y borrar gastos; actualizar avances
   exportar.py         Reporte por obra y respaldo en Excel
+  alertas.py          Resumen de alertas en texto
+  powerbi.py          Exportación en CSV para Power BI
   demo.py             Generador de datos ficticios
 sql/                  Una consulta por archivo, comentada
 tests/                Pruebas automáticas
 docs/GUIA.md          Explicación del código, paso a paso
 docs/PUBLICAR.md      Cómo publicarla y qué limitaciones tiene
 docs/PARA_LA_CONSTRUCTORA.md  Cómo probarla con datos de una obra real
+docs/AUTOMATIZAR.md   Programar el resumen de alertas con cron
 practica/             Ejercicios de SQL y pandas sobre esta misma base, con revisor
 powerbi/              Datos en CSV y guía para armar el tablero en Power BI (DAX)
 ```

@@ -370,3 +370,29 @@ def test_hojas_obras_o_presupuesto_vacias_son_error():
     datos["Obras"] = datos["Obras"].iloc[0:0]
     _, errores, _ = importar.validar(datos)
     assert "Hoja Obras: no tiene ninguna obra" in errores
+
+
+# ---------------------------------------------------------------- alertas
+
+@pytest.mark.parametrize("monto, texto", [
+    (78_000_000, "₡78,0 M"), (1_350_000, "₡1,4 M"), (2_500_000_000, "₡2 500,0 M"), (-4_054_359, "-₡4,1 M"),
+])
+def test_formato_en_millones(monto, texto):
+    from costos import alertas
+    assert alertas.millones(monto) == texto
+
+
+def test_resumen_de_alertas_pone_primero_las_obras_en_rojo():
+    from costos import alertas
+    con = db.conectar(":memory:")
+    limpios, _, _ = importar.validar(demo.generar())
+    importar.cargar(con, limpios)
+    partidas = calculos.metricas_partidas(db.consulta(con, "resumen_partidas"))
+    obras = calculos.resumen_obras(partidas)
+    texto = alertas.resumen(partidas, obras, "17/11/2026")
+
+    lineas_de_obra = [l for l in texto.splitlines() if "*OB-" in l]
+    assert lineas_de_obra[0].startswith("🔴 *OB-03*")       # la única en rojo va primero
+    assert lineas_de_obra[-1].startswith("🟢 *OB-01*")
+    assert "Reparación de fuga" in texto                    # el gasto sin presupuestar aparece
+    assert texto.endswith("1 en rojo, 2 en riesgo, de 4 obras.")
