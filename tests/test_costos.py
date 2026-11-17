@@ -357,3 +357,16 @@ def test_corregir_y_borrar_gastos():
             registro.guardar_cambios_gastos(
                 con, [{"gasto_id": original, "fecha": fecha, "proveedor": "", "documento": "",
                        "descripcion": "", "monto": monto}], borrar=[])
+
+
+def test_hojas_obras_o_presupuesto_vacias_son_error():
+    datos = _datos_minimos()
+    datos["Presupuesto"] = datos["Presupuesto"].iloc[0:0]
+    datos["Gastos"] = datos["Gastos"].iloc[0:0]
+    _, errores, _ = importar.validar(datos)
+    assert errores == ["Hoja Presupuesto: no tiene ninguna partida"]
+
+    datos = _datos_minimos()
+    datos["Obras"] = datos["Obras"].iloc[0:0]
+    _, errores, _ = importar.validar(datos)
+    assert "Hoja Obras: no tiene ninguna obra" in errores

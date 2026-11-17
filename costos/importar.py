@@ -174,6 +174,14 @@ def validar(datos: dict[str, pd.DataFrame]):
     error("Presupuesto", pres.loc[pres.duplicated(["obra", "partida"]), "fila"],
           "partida repetida dentro de la misma obra")
 
+    # --- Hojas vacías ---------------------------------------------------------
+    # Sin obras o sin partidas no hay nada que mostrar. Gastos sí puede venir
+    # vacía: una obra que apenas empieza todavía no tiene gastos.
+    if obras.empty:
+        errores.append("Hoja Obras: no tiene ninguna obra")
+    if pres.empty:
+        errores.append("Hoja Presupuesto: no tiene ninguna partida")
+
     # --- Referencias entre hojas ----------------------------------------------
     codigos = set(obras["codigo"].dropna())
     for hoja, df in (("Presupuesto", pres), ("Gastos", gastos)):

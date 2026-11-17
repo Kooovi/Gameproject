@@ -131,7 +131,8 @@ with tab_resumen:
     presupuesto, gastado, proyeccion = obras["presupuesto"].sum(), obras["gastado"].sum(), obras["proyeccion"].sum()
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Presupuesto total", colones(presupuesto))
-    c2.metric("Gastado", colones(gastado), f"{pct(gastado / presupuesto)} del presupuesto", delta_color="off", delta_arrow="off")
+    pct_total = gastado / presupuesto if presupuesto > 0 else float("nan")    # no dividir entre 0
+    c2.metric("Gastado", colones(gastado), f"{pct(pct_total)} del presupuesto", delta_color="off", delta_arrow="off")
     c3.metric("Proyección final", colones(proyeccion), diferencia(proyeccion - presupuesto),
               delta_color="inverse")
     c4.metric("Obras en rojo", f"{(obras['estado'] == calculos.SOBRECOSTO).sum()} de {len(obras)}")
@@ -386,6 +387,6 @@ compara contra su **avance**.
 - Una partida sin avance se proyecta igual a su presupuesto (o a lo gastado, si ya lo superó).
 """)
     st.subheader("Las consultas SQL que usa la herramienta")
-    for nombre in ["resumen_partidas", "gasto_mensual", "top_proveedores", "gastos_detalle"]:
+    for nombre in ["resumen_partidas", "gasto_mensual", "top_proveedores", "gastos_detalle", "gastos_editables"]:
         with st.expander(f"sql/{nombre}.sql"):
             st.code(db.texto_sql(nombre), language="sql")
