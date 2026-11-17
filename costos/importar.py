@@ -7,11 +7,14 @@ de errores (impiden cargar) y de avisos (se carga, pero conviene revisarlos).
 Cada mensaje dice la hoja y la fila de Excel, para que se pueda corregir.
 """
 
+import re
 import sqlite3
+import unicodedata
 
 import pandas as pd
 
-# Columnas de cada hoja (los encabezados se comparan sin mayúsculas ni espacios).
+# Columnas de cada hoja. Los encabezados se comparan sin mayúsculas, tildes ni
+# espacios, así que "Código", "CODIGO" y " codigo " valen igual.
 COLUMNAS = {
     "Obras": ["codigo", "nombre", "cliente", "fecha_inicio", "fecha_fin_prevista"],
     "Presupuesto": ["obra", "partida", "categoria", "presupuesto", "avance_pct"],
@@ -24,6 +27,10 @@ OBLIGATORIAS = {
 }
 NO_SON_TEXTO = {"presupuesto", "avance_pct", "monto", "fecha", "fecha_inicio", "fecha_fin_prevista", "fila"}
 SIN_PRESUPUESTAR = "Sin presupuestar"
+# Otras formas comunes de llamar a una columna -> el nombre que usa la herramienta.
+ALIAS = {"avance": "avance_pct", "avance_%": "avance_pct", "%_avance": "avance_pct",
+         "codigo_obra": "obra", "detalle": "descripcion", "factura": "documento",
+         "fecha_fin": "fecha_fin_prevista"}
 
 
 def leer_excel(archivo) -> dict[str, pd.DataFrame]:
@@ -35,10 +42,53 @@ def leer_excel(archivo) -> dict[str, pd.DataFrame]:
     return {h: hojas[h] for h in COLUMNAS}
 
 
+def _encabezado(nombre) -> str:
+    """'  Código Obra ' -> 'codigo_obra'. Quita tildes, mayúsculas y espacios."""
+    texto = unicodedata.normalize("NFKD", str(nombre).strip().lower())
+    texto = "".join(letra for letra in texto if not unicodedata.combining(letra))   # sin tildes
+    texto = re.sub(r"\s+", "_", texto)
+    return ALIAS.get(texto, texto)
+
+
 def _texto(serie: pd.Series) -> pd.Series:
     """Pasa a texto sin espacios sobrantes; las celdas vacías quedan como NA."""
-    limpio = serie.astype("string").str.strip()
-    return limpio.where(limpio != "")
+    def uno(valor):
+        if pd.isna(valor):
+            return pd.NA
+        # Un código de obra "1" que Excel guardó como número llega como 1.0: se deja "1".
+        if isinstance(valor, float) and valor.is_integer():
+            valor = int(valor)
+        return str(valor).strip() or pd.NA
+    return serie.map(uno).astype("string")
+
+
+def _numero(valor):
+    """Convierte una celda a número. Devuelve None si no se puede.
+
+    Acepta números de Excel y también texto como "₡1.250.000,50" o "1,250,000.50".
+    Regla para el texto: si hay punto y coma, el último que aparece es el decimal.
+    Si solo hay uno de los dos y agrupa de tres en tres ("1.250.000"), son miles.
+    """
+    if pd.isna(valor):
+        return None
+    if isinstance(valor, (int, float)):
+        return float(valor)
+    texto = re.sub(r"[₡¢$%\s]|CRC", "", str(valor))
+    if "." in texto and "," in texto:
+        miles, decimal = (".", ",") if texto.rfind(",") > texto.rfind(".") else (",", ".")
+        texto = texto.replace(miles, "").replace(decimal, ".")
+    elif re.fullmatch(r"-?\d{1,3}([.,]\d{3})+", texto):
+        texto = texto.replace(".", "").replace(",", "")          # separador de miles
+    else:
+        texto = texto.replace(",", ".")                          # coma decimal
+    try:
+        return float(texto)
+    except ValueError:
+        return None
+
+
+def _numeros(serie: pd.Series) -> pd.Series:
+    return pd.to_numeric(serie.map(_numero), errors="coerce")
 
 
 def _fechas(serie: pd.Series) -> pd.Series:
@@ -61,7 +111,7 @@ def validar(datos: dict[str, pd.DataFrame]):
 
     for hoja, columnas in COLUMNAS.items():
         df = datos[hoja].copy()
-        df.columns = [str(c).strip().lower() for c in df.columns]
+        df.columns = [_encabezado(c) for c in df.columns]
         faltan = [c for c in OBLIGATORIAS[hoja] if c not in df.columns]
         if faltan:
             errores.append(f"Hoja {hoja}: faltan las columnas {', '.join(faltan)}")
@@ -93,16 +143,23 @@ def validar(datos: dict[str, pd.DataFrame]):
                 error(hoja, df.loc[df[c].isna(), "fila"], f"la columna '{c}' está vacía")
 
     # --- Números --------------------------------------------------------------
-    # errors="coerce": lo que no sea número queda como NaN en vez de reventar.
-    pres["presupuesto"] = pd.to_numeric(pres["presupuesto"], errors="coerce")
+    # Lo que no se pueda leer como número queda vacío (NaN) y se reporta como error.
+    pres["presupuesto"] = _numeros(pres["presupuesto"])
     error("Presupuesto", pres.loc[pres["presupuesto"].isna() | (pres["presupuesto"] < 0), "fila"],
           "el presupuesto debe ser un número mayor o igual a 0")
 
-    pres["avance_pct"] = pd.to_numeric(pres["avance_pct"], errors="coerce").fillna(0)
+    pres["avance_pct"] = _numeros(pres["avance_pct"]).fillna(0)
+    # Una celda con formato de porcentaje en Excel (35 %) se lee como 0.35.
+    # Si ningún avance pasa de 1 y hay decimales, se asume que vienen así.
+    con_decimales = (pres["avance_pct"] % 1 != 0).any()
+    if pres["avance_pct"].between(0, 1).all() and con_decimales:
+        pres["avance_pct"] = pres["avance_pct"] * 100
+        avisos.append("Hoja Presupuesto: los avances venían como fracción (0.35) y se "
+                      "leyeron como porcentaje (35 %). Revisá que sea correcto.")
     error("Presupuesto", pres.loc[~pres["avance_pct"].between(0, 100), "fila"],
           "avance_pct debe estar entre 0 y 100")
 
-    gastos["monto"] = pd.to_numeric(gastos["monto"], errors="coerce")
+    gastos["monto"] = _numeros(gastos["monto"])
     error("Gastos", gastos.loc[gastos["monto"].isna(), "fila"], "el monto debe ser un número")
 
     # --- Fechas ---------------------------------------------------------------
@@ -122,6 +179,16 @@ def validar(datos: dict[str, pd.DataFrame]):
     for hoja, df in (("Presupuesto", pres), ("Gastos", gastos)):
         error(hoja, df.loc[df["obra"].notna() & ~df["obra"].isin(codigos), "fila"],
               "la obra no existe en la hoja Obras")
+
+    # Si en Gastos la partida está escrita con otra mayúscula ("techos" y "Techos"),
+    # se usa la forma en que aparece en el presupuesto. casefold() es un lower() más estricto.
+    forma_oficial = {(obra, str(partida).casefold()): partida
+                     for obra, partida in zip(pres["obra"], pres["partida"]) if not pd.isna(partida)}
+    gastos["partida"] = [
+        partida if pd.isna(partida) else forma_oficial.get((obra, str(partida).casefold()), partida)
+        for obra, partida in zip(gastos["obra"], gastos["partida"])
+    ]
+    gastos["partida"] = gastos["partida"].astype("string")
 
     # Gastos cuya partida no está en el presupuesto: no se rechazan, porque un
     # gasto que nadie presupuestó es justo lo que la herramienta debe destapar.

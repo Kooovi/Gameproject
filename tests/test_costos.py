@@ -240,3 +240,43 @@ def test_las_soluciones_de_pandas_pasan_su_propio_revisor():
     # El reto no cae en la trampa de duplicar el presupuesto.
     reto = pandas_soluciones.ej12(*tablas).set_index("codigo")
     assert reto.loc["OB-01", "presupuesto"] == 78_000_000
+
+
+# ---------------------------------------------------------------- Excel "sucio"
+
+@pytest.mark.parametrize("celda, esperado", [
+    (1250000, 1250000), (1250000.5, 1250000.5),
+    ("₡1.250.000,50", 1250000.5),      # formato de Costa Rica
+    ("1,250,000.50", 1250000.5),       # formato de Estados Unidos
+    ("₡ 1.250.000", 1250000), ("1,250,000", 1250000),
+    ("1250,5", 1250.5), ("1250.5", 1250.5), ("-3.500", -3500), ("35%", 35),
+    ("abc", None), ("", None), (None, None),
+])
+def test_lectura_de_montos(celda, esperado):
+    assert importar._numero(celda) == esperado
+
+
+def test_excel_sucio_se_carga_igual():
+    datos = {
+        "Obras": pd.DataFrame({" Código ": [1.0], "NOMBRE": ["Obra A"]}),          # código numérico
+        "Presupuesto": pd.DataFrame({
+            "Obra": [1, 1], "Partida": ["Cimientos", "Techos"],
+            "Presupuesto": ["₡1.000.000,00", "₡500.000,00"], "Avance %": [0.5, 0.25],   # avance como fracción
+        }),
+        "Gastos": pd.DataFrame({
+            "Fecha": ["15/03/2026", "16/03/2026"], "Obra": ["1", "1"],
+            "Partida": ["cimientos ", "TECHOS"], "Descripción": ["Cemento", "Láminas"],
+            "Monto": ["400.000", "₡100.000,50"],
+        }),
+    }
+    limpios, errores, avisos = importar.validar(datos)
+    assert errores == []
+    assert len(avisos) == 1 and "fracción" in avisos[0]        # avisa del avance, no crea partidas de más
+
+    con = db.conectar(":memory:")
+    importar.cargar(con, limpios)
+    partidas = db.consulta(con, "resumen_partidas").set_index("partida")
+    assert list(partidas.index) == ["Cimientos", "Techos"]
+    assert partidas.loc["Cimientos", ["presupuesto", "avance", "gastado"]].tolist() == [1_000_000, 0.5, 400_000]
+    assert partidas.loc["Techos", ["presupuesto", "avance", "gastado"]].tolist() == [500_000, 0.25, 100_000.5]
+    assert con.execute("SELECT descripcion FROM gastos ORDER BY id").fetchall() == [("Cemento",), ("Láminas",)]

@@ -98,8 +98,11 @@ proyección es la estimación al terminar (EAC = presupuesto ÷ CPI).
 ## 5. La importación (`costos/importar.py`)
 
 - `pd.read_excel(archivo, sheet_name=None)` lee **todas** las hojas y devuelve un diccionario.
-- `pd.to_numeric(..., errors="coerce")` convierte a número; lo que no se puede queda como
-  `NaN` en vez de botar el programa. Después se reportan esas filas como error.
+- Lo que no se puede convertir a número o a fecha queda vacío (`NaN`) en vez de botar el
+  programa (`errors="coerce"`). Después esas filas se reportan como error.
+- **Limpieza antes de validar**: `_encabezado()` quita tildes y mayúsculas de los títulos,
+  y `_numero()` entiende montos escritos como texto (`₡1.250.000,50`). La regla para
+  distinguir miles de decimales está explicada en el propio código.
 - **Errores contra avisos**: un error (monto que no es número, obra que no existe) impide
   cargar. Un aviso (gasto en partida no presupuestada) deja cargar pero lo señala.
 - **Transacción**: `with con:` hace que la carga sea todo o nada. Si falla a la mitad, la

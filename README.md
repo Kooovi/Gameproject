@@ -113,6 +113,16 @@ Tres hojas. Las columnas en **negrita** son obligatorias.
 | Presupuesto | **obra** (código), **partida**, categoria, **presupuesto**, avance_pct (0 a 100) |
 | Gastos | **fecha**, **obra** (código), **partida**, proveedor, documento, descripcion, **monto** |
 
+El importador tolera las diferencias típicas de un Excel hecho a mano:
+
+- Encabezados con mayúsculas, tildes o espacios (`Código`, `DESCRIPCIÓN`, `Avance %`).
+- Montos escritos como texto: `₡1.250.000,50` o `1,250,000.50`.
+- Fechas como fecha de Excel, `15/03/2026` (día/mes/año) o `2026-03-15`.
+- Avances con formato de porcentaje de Excel (los lee y avisa).
+- La misma partida escrita con distinta mayúscula en Presupuesto y en Gastos.
+
+Lo que no puede adivinar lo reporta como error, con hoja y fila.
+
 ## Próximos pasos
 
 1. Probarlo con el Excel real de una obra ya terminada y ajustar lo que no calce.
