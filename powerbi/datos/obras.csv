@@ -1,0 +1,5 @@
+﻿obra_id,codigo,obra,cliente,fecha_inicio,fecha_fin_prevista
+1,OB-01,Casa de habitación Los Cipreses,Familia Rojas (ficticia),2026-03-02,2026-12-18
+2,OB-02,Bodega industrial El Coyol,Logística Tica S.A. (ficticia),2026-05-11,2027-02-26
+3,OB-03,Remodelación local comercial Escazú,Café Aurora (ficticio),2026-06-15,2026-11-27
+4,OB-04,Apartamentos Vista Verde,Inversiones Zurquí (ficticia),2026-09-07,2027-08-20

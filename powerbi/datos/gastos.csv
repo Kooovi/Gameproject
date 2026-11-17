@@ -1,0 +1,169 @@
+﻿gasto_id,partida_id,fecha,proveedor,documento,descripcion,monto
+1,1,2026-03-22,Planilla quincenal,F-19156,Obras preliminares - pago parcial,135300.0
+2,8,2026-04-08,Caja chica,F-81194,Gastos indirectos - pago parcial,879000.0
+3,2,2026-04-21,Concretos del Valle,F-83434,Cimientos - pago parcial,8702800.0
+4,3,2026-04-27,Depósito El Roble,F-83148,Estructura y paredes - pago parcial,2457300.0
+5,1,2026-04-29,Planilla quincenal,F-17747,Obras preliminares - pago parcial,887600.0
+6,3,2026-05-05,Concretos del Valle,F-78838,Estructura y paredes - pago parcial,59200.0
+7,8,2026-05-17,Caja chica,F-21928,Gastos indirectos - pago parcial,565000.0
+8,3,2026-05-19,Aceros Tibás,F-65272,Estructura y paredes - pago parcial,475100.0
+9,2,2026-05-28,Ferretería La Cumbre,F-80868,Cimientos - pago parcial,499300.0
+10,8,2026-06-03,Alquiler de equipo Turrialba,F-56621,Gastos indirectos - pago parcial,834800.0
+11,3,2026-06-14,Depósito El Roble,F-25475,Estructura y paredes - pago parcial,2008300.0
+12,9,2026-06-14,Planilla quincenal,F-56604,Obras preliminares - pago parcial,2910400.0
+13,9,2026-06-14,Planilla quincenal,F-73262,Obras preliminares - pago parcial,2002400.0
+14,3,2026-06-16,Ferretería La Cumbre,F-41994,Estructura y paredes - pago parcial,1106400.0
+15,17,2026-06-16,Planilla quincenal,F-45108,Obras preliminares - pago parcial,134500.0
+16,5,2026-06-18,Instalaciones Poás,F-62644,Instalación eléctrica - pago parcial,317100.0
+17,9,2026-06-18,Planilla quincenal,F-71614,Obras preliminares - pago parcial,284600.0
+18,11,2026-06-18,Ferretería La Cumbre,F-48399,Estructura y paredes - pago parcial,12455300.0
+19,10,2026-06-20,Aceros Tibás,F-95964,Cimientos - pago parcial,1324100.0
+20,10,2026-06-20,Aceros Tibás,F-96149,Cimientos - pago parcial,2250800.0
+21,9,2026-06-21,Planilla quincenal,F-39719,Obras preliminares - pago parcial,1846700.0
+22,10,2026-06-23,Ferretería La Cumbre,F-13610,Cimientos - pago parcial,4513900.0
+23,5,2026-06-29,Electromecánica Irazú,F-29830,Instalación eléctrica - pago parcial,2029200.0
+24,6,2026-07-09,Electromecánica Irazú,F-67753,Instalación mecánica - pago parcial,165100.0
+25,5,2026-07-11,Electromecánica Irazú,F-11581,Instalación eléctrica - pago parcial,555000.0
+26,19,2026-07-16,Concretos del Valle,F-38556,Estructura y paredes - pago parcial,96000.0
+27,12,2026-07-17,Ferretería La Cumbre,F-78617,Techos - pago parcial,3310800.0
+28,10,2026-07-19,Aceros Tibás,F-70707,Cimientos - pago parcial,5632000.0
+29,12,2026-07-19,Depósito El Roble,F-82938,Techos - pago parcial,563000.0
+30,1,2026-07-21,Planilla quincenal,F-14914,Obras preliminares - pago parcial,142500.0
+31,17,2026-07-21,Planilla quincenal,F-69477,Obras preliminares - pago parcial,31600.0
+32,17,2026-07-21,Planilla quincenal,F-36446,Obras preliminares - pago parcial,71500.0
+33,3,2026-07-24,Concretos del Valle,F-68829,Estructura y paredes - pago parcial,2657600.0
+34,24,2026-07-25,Alquiler de equipo Turrialba,F-74447,Gastos indirectos - pago parcial,371600.0
+35,3,2026-07-28,Ferretería La Cumbre,F-54833,Estructura y paredes - pago parcial,2105900.0
+36,20,2026-07-28,Concretos del Valle,F-92532,Techos - pago parcial,928000.0
+37,10,2026-07-29,Depósito El Roble,F-30821,Cimientos - pago parcial,246900.0
+38,2,2026-07-31,Ferretería La Cumbre,F-58810,Cimientos - pago parcial,254500.0
+39,9,2026-07-31,Planilla quincenal,F-89316,Obras preliminares - pago parcial,678100.0
+40,17,2026-08-01,Planilla quincenal,F-42826,Obras preliminares - pago parcial,196400.0
+41,1,2026-08-02,Planilla quincenal,F-85642,Obras preliminares - pago parcial,527600.0
+42,13,2026-08-02,Electromecánica Irazú,F-61427,Instalación eléctrica - pago parcial,15600.0
+43,16,2026-08-02,Alquiler de equipo Turrialba,F-46577,Gastos indirectos - pago parcial,622300.0
+44,18,2026-08-06,Ferretería La Cumbre,F-40089,Cimientos - pago parcial,1746600.0
+45,3,2026-08-08,Concretos del Valle,F-54580,Estructura y paredes - pago parcial,1760500.0
+46,19,2026-08-08,Concretos del Valle,F-15929,Estructura y paredes - pago parcial,1314000.0
+47,20,2026-08-09,Depósito El Roble,F-61639,Techos - pago parcial,535900.0
+48,21,2026-08-10,Electromecánica Irazú,F-74132,Instalación eléctrica - pago parcial,168100.0
+49,21,2026-08-11,Electromecánica Irazú,F-93508,Instalación eléctrica - pago parcial,2228300.0
+50,13,2026-08-13,Electromecánica Irazú,F-37877,Instalación eléctrica - pago parcial,38500.0
+51,14,2026-08-13,Instalaciones Poás,F-12553,Instalación mecánica - pago parcial,172300.0
+52,5,2026-08-16,Electromecánica Irazú,F-44438,Instalación eléctrica - pago parcial,691500.0
+53,20,2026-08-17,Ferretería La Cumbre,F-96185,Techos - pago parcial,181400.0
+54,6,2026-08-18,Electromecánica Irazú,F-73114,Instalación mecánica - pago parcial,518900.0
+55,7,2026-08-19,Concretos del Valle,F-88941,Acabados - pago parcial,152200.0
+56,19,2026-08-20,Depósito El Roble,F-53952,Estructura y paredes - pago parcial,134200.0
+57,11,2026-08-22,Concretos del Valle,F-43995,Estructura y paredes - pago parcial,1128700.0
+58,16,2026-08-22,Alquiler de equipo Turrialba,F-80333,Gastos indirectos - pago parcial,3797100.0
+59,20,2026-08-22,Ferretería La Cumbre,F-15739,Techos - pago parcial,240700.0
+60,17,2026-08-23,Planilla quincenal,F-45457,Obras preliminares - pago parcial,538400.0
+61,5,2026-08-26,Electromecánica Irazú,F-66429,Instalación eléctrica - pago parcial,378600.0
+62,11,2026-08-26,Ferretería La Cumbre,F-66860,Estructura y paredes - pago parcial,552300.0
+63,18,2026-08-26,Aceros Tibás,F-23930,Cimientos - pago parcial,1239700.0
+64,8,2026-08-27,Transportes Barva,F-77947,Gastos indirectos - pago parcial,155300.0
+65,16,2026-08-27,Caja chica,F-43896,Gastos indirectos - pago parcial,1200500.0
+66,18,2026-08-29,Aceros Tibás,F-76412,Cimientos - pago parcial,1191100.0
+67,19,2026-08-29,Depósito El Roble,F-21073,Estructura y paredes - pago parcial,181200.0
+68,7,2026-08-30,Depósito El Roble,F-25119,Acabados - pago parcial,171300.0
+69,19,2026-08-30,Concretos del Valle,F-57728,Estructura y paredes - pago parcial,544800.0
+70,4,2026-08-31,Aceros Tibás,F-47302,Techos - pago parcial,3113900.0
+71,21,2026-08-31,Instalaciones Poás,F-19189,Instalación eléctrica - pago parcial,181900.0
+72,3,2026-09-01,Aceros Tibás,F-86008,Estructura y paredes - pago parcial,5932700.0
+73,12,2026-09-01,Aceros Tibás,F-34000,Techos - pago parcial,426200.0
+74,19,2026-09-01,Ferretería La Cumbre,F-45263,Estructura y paredes - pago parcial,1374400.0
+75,4,2026-09-03,Depósito El Roble,F-50580,Techos - pago parcial,4035000.0
+76,13,2026-09-03,Electromecánica Irazú,F-46331,Instalación eléctrica - pago parcial,456900.0
+77,13,2026-09-03,Electromecánica Irazú,F-97969,Instalación eléctrica - pago parcial,680100.0
+78,14,2026-09-03,Instalaciones Poás,F-67731,Instalación mecánica - pago parcial,334800.0
+79,13,2026-09-04,Instalaciones Poás,F-76552,Instalación eléctrica - pago parcial,91200.0
+80,17,2026-09-08,Planilla quincenal,F-79063,Obras preliminares - pago parcial,177700.0
+81,21,2026-09-08,Electromecánica Irazú,F-59364,Instalación eléctrica - pago parcial,476000.0
+82,13,2026-09-09,Electromecánica Irazú,F-18305,Instalación eléctrica - pago parcial,340500.0
+83,7,2026-09-10,Depósito El Roble,F-28889,Acabados - pago parcial,257600.0
+84,14,2026-09-10,Instalaciones Poás,F-51749,Instalación mecánica - pago parcial,345800.0
+85,4,2026-09-12,Concretos del Valle,F-12957,Techos - pago parcial,891200.0
+86,12,2026-09-13,Ferretería La Cumbre,F-32589,Techos - pago parcial,868400.0
+87,25,2026-09-13,Planilla quincenal,F-11536,Obras preliminares - pago parcial,19500.0
+88,9,2026-09-14,Planilla quincenal,F-46623,Obras preliminares - pago parcial,367800.0
+89,26,2026-09-14,Aceros Tibás,F-69095,Cimientos - pago parcial,2327700.0
+90,32,2026-09-15,Caja chica,F-35219,Gastos indirectos - pago parcial,333600.0
+91,6,2026-09-16,Electromecánica Irazú,F-34983,Instalación mecánica - pago parcial,1361700.0
+92,24,2026-09-16,Alquiler de equipo Turrialba,F-75259,Gastos indirectos - pago parcial,252000.0
+93,1,2026-09-18,Planilla quincenal,F-39260,Obras preliminares - pago parcial,1258800.0
+94,18,2026-09-18,Aceros Tibás,F-96050,Cimientos - pago parcial,2366100.0
+95,14,2026-09-19,Instalaciones Poás,F-77143,Instalación mecánica - pago parcial,134800.0
+96,16,2026-09-19,Caja chica,F-74829,Gastos indirectos - pago parcial,992700.0
+97,2,2026-09-20,Ferretería La Cumbre,F-23507,Cimientos - pago parcial,1262600.0
+98,17,2026-09-20,Planilla quincenal,F-31161,Obras preliminares - pago parcial,73300.0
+99,21,2026-09-21,Instalaciones Poás,F-43055,Instalación eléctrica - pago parcial,754700.0
+100,23,2026-09-21,Aceros Tibás,F-71124,Acabados - pago parcial,560200.0
+101,23,2026-09-21,Depósito El Roble,F-76403,Acabados - pago parcial,1234100.0
+102,32,2026-09-21,Transportes Barva,F-53625,Gastos indirectos - pago parcial,92900.0
+103,33,2026-09-22,Instalaciones Poás,F-55012,Fuga en tubería existente del local,1350000.0
+104,25,2026-09-22,Planilla quincenal,F-96766,Obras preliminares - pago parcial,12600.0
+105,25,2026-09-22,Planilla quincenal,F-42679,Obras preliminares - pago parcial,1793600.0
+106,32,2026-09-22,Alquiler de equipo Turrialba,F-32897,Gastos indirectos - pago parcial,53500.0
+107,6,2026-09-23,Electromecánica Irazú,F-69853,Instalación mecánica - pago parcial,1300100.0
+108,7,2026-09-23,Depósito El Roble,F-37256,Acabados - pago parcial,516600.0
+109,7,2026-09-23,Ferretería La Cumbre,F-93153,Acabados - pago parcial,2191100.0
+110,19,2026-09-24,Aceros Tibás,F-76314,Estructura y paredes - pago parcial,1594500.0
+111,19,2026-09-24,Concretos del Valle,F-88483,Estructura y paredes - pago parcial,6173000.0
+112,13,2026-09-26,Electromecánica Irazú,F-30243,Instalación eléctrica - pago parcial,692200.0
+113,26,2026-09-26,Concretos del Valle,F-63242,Cimientos - pago parcial,556000.0
+114,10,2026-09-27,Ferretería La Cumbre,F-72656,Cimientos - pago parcial,2751900.0
+115,17,2026-09-27,Planilla quincenal,F-68417,Obras preliminares - pago parcial,636200.0
+116,23,2026-09-27,Ferretería La Cumbre,F-19779,Acabados - pago parcial,154700.0
+117,25,2026-09-27,Planilla quincenal,F-61139,Obras preliminares - pago parcial,313000.0
+118,32,2026-09-28,Caja chica,F-21939,Gastos indirectos - pago parcial,690200.0
+119,22,2026-10-01,Electromecánica Irazú,F-73231,Instalación mecánica - pago parcial,812800.0
+120,22,2026-10-03,Instalaciones Poás,F-43284,Instalación mecánica - pago parcial,632700.0
+121,20,2026-10-04,Aceros Tibás,F-29590,Techos - pago parcial,709100.0
+122,22,2026-10-04,Electromecánica Irazú,F-20154,Instalación mecánica - pago parcial,752700.0
+123,14,2026-10-05,Instalaciones Poás,F-54448,Instalación mecánica - pago parcial,148300.0
+124,14,2026-10-05,Instalaciones Poás,F-53450,Instalación mecánica - pago parcial,430800.0
+125,26,2026-10-05,Concretos del Valle,F-46929,Cimientos - pago parcial,912000.0
+126,22,2026-10-06,Instalaciones Poás,F-91415,Instalación mecánica - pago parcial,355400.0
+127,12,2026-10-08,Aceros Tibás,F-75752,Techos - pago parcial,335200.0
+128,24,2026-10-08,Transportes Barva,F-49577,Gastos indirectos - pago parcial,651000.0
+129,32,2026-10-09,Transportes Barva,F-82140,Gastos indirectos - pago parcial,156700.0
+130,21,2026-10-10,Electromecánica Irazú,F-96415,Instalación eléctrica - pago parcial,60300.0
+131,5,2026-10-11,Instalaciones Poás,F-64433,Instalación eléctrica - pago parcial,636100.0
+132,26,2026-10-12,Ferretería La Cumbre,F-94474,Cimientos - pago parcial,1745600.0
+133,10,2026-10-13,Aceros Tibás,F-93341,Cimientos - pago parcial,12811900.0
+134,26,2026-10-13,Ferretería La Cumbre,F-20561,Cimientos - pago parcial,2408200.0
+135,20,2026-10-14,Aceros Tibás,F-76262,Techos - pago parcial,1079100.0
+136,7,2026-10-16,Aceros Tibás,F-72966,Acabados - pago parcial,1757100.0
+137,21,2026-10-17,Electromecánica Irazú,F-92282,Instalación eléctrica - pago parcial,99700.0
+138,24,2026-10-17,Transportes Barva,F-13255,Gastos indirectos - pago parcial,628600.0
+139,6,2026-10-18,Instalaciones Poás,F-62175,Instalación mecánica - pago parcial,175000.0
+140,23,2026-10-18,Ferretería La Cumbre,F-50851,Acabados - pago parcial,665200.0
+141,13,2026-10-19,Electromecánica Irazú,F-68658,Instalación eléctrica - pago parcial,119000.0
+142,4,2026-10-20,Concretos del Valle,F-32026,Techos - pago parcial,470800.0
+143,20,2026-10-20,Aceros Tibás,F-52747,Techos - pago parcial,2224100.0
+144,22,2026-10-20,Electromecánica Irazú,F-72784,Instalación mecánica - pago parcial,770000.0
+145,10,2026-10-21,Ferretería La Cumbre,F-81913,Cimientos - pago parcial,2928700.0
+146,17,2026-10-21,Planilla quincenal,F-79610,Obras preliminares - pago parcial,15700.0
+147,8,2026-10-22,Alquiler de equipo Turrialba,F-79220,Gastos indirectos - pago parcial,121200.0
+148,9,2026-10-23,Planilla quincenal,F-55812,Obras preliminares - pago parcial,219700.0
+149,9,2026-10-23,Planilla quincenal,F-20556,Obras preliminares - pago parcial,1153400.0
+150,24,2026-10-23,Transportes Barva,F-24768,Gastos indirectos - pago parcial,675000.0
+151,13,2026-10-24,Instalaciones Poás,F-83336,Instalación eléctrica - pago parcial,774700.0
+152,22,2026-10-24,Instalaciones Poás,F-16127,Instalación mecánica - pago parcial,13500.0
+153,26,2026-10-24,Aceros Tibás,F-16419,Cimientos - pago parcial,3818100.0
+154,25,2026-10-25,Planilla quincenal,F-43189,Obras preliminares - pago parcial,3528800.0
+155,32,2026-10-25,Transportes Barva,F-66023,Gastos indirectos - pago parcial,757600.0
+156,19,2026-10-26,Concretos del Valle,F-42040,Estructura y paredes - pago parcial,1296600.0
+157,25,2026-10-26,Planilla quincenal,F-16326,Obras preliminares - pago parcial,992100.0
+158,26,2026-10-26,Ferretería La Cumbre,F-32382,Cimientos - pago parcial,917200.0
+159,14,2026-10-27,Electromecánica Irazú,F-39957,Instalación mecánica - pago parcial,29100.0
+160,21,2026-10-27,Electromecánica Irazú,F-21153,Instalación eléctrica - pago parcial,64900.0
+161,14,2026-10-28,Electromecánica Irazú,F-21018,Instalación mecánica - pago parcial,62800.0
+162,5,2026-10-29,Instalaciones Poás,F-40245,Instalación eléctrica - pago parcial,770900.0
+163,11,2026-10-29,Ferretería La Cumbre,F-37661,Estructura y paredes - pago parcial,24639200.0
+164,23,2026-10-29,Aceros Tibás,F-12294,Acabados - pago parcial,1530600.0
+165,23,2026-10-29,Aceros Tibás,F-45213,Acabados - pago parcial,1483900.0
+166,14,2026-10-30,Electromecánica Irazú,F-31163,Instalación mecánica - pago parcial,276700.0
+167,25,2026-10-30,Planilla quincenal,F-57278,Obras preliminares - pago parcial,4566500.0
+168,8,2026-10-31,Caja chica,F-57415,Gastos indirectos - pago parcial,659800.0

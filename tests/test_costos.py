@@ -306,3 +306,23 @@ def test_avance_vacio_no_se_guarda():
     with pytest.raises(ValueError):
         registro.actualizar_avances(con, {partida_id: float("nan")})
     assert db.consulta(con, "resumen_partidas").iloc[0]["avance"] == 0.5        # quedó como estaba
+
+
+# ---------------------------------------------------------------- exportación a Power BI
+
+def test_exportacion_powerbi(tmp_path):
+    from costos import powerbi
+    con = db.conectar(":memory:")
+    limpios, _, _ = importar.validar(demo.generar())
+    importar.cargar(con, limpios)
+    powerbi.exportar(con, tmp_path)
+
+    gastos = pd.read_csv(tmp_path / "gastos.csv", encoding="utf-8-sig")
+    calendario = pd.read_csv(tmp_path / "calendario.csv", encoding="utf-8-sig")
+    verificacion = pd.read_csv(tmp_path / "verificacion.csv", encoding="utf-8-sig").set_index("obra_codigo")
+
+    # Cada fecha de gasto existe en el calendario (si no, la relación en Power BI falla).
+    assert gastos["fecha"].isin(calendario["fecha"]).all()
+    assert calendario["fecha"].is_unique
+    assert verificacion.loc["TOTAL", "gastado"] == pytest.approx(gastos["monto"].sum())
+    assert verificacion.loc["OB-01", "presupuesto"] == 78_000_000

@@ -1,0 +1,34 @@
+﻿partida_id,obra_id,partida,categoria,presupuesto,avance
+1,1,Obras preliminares,Mano de obra,3120000.0,1.0
+2,1,Cimientos,Materiales,10920000.0,1.0
+3,1,Estructura y paredes,Materiales,20280000.0,1.0
+4,1,Techos,Materiales,9360000.0,0.9
+5,1,Instalación eléctrica,Subcontratos,7800000.0,0.7
+6,1,Instalación mecánica,Subcontratos,6240000.0,0.6
+7,1,Acabados,Materiales,15600000.0,0.35
+8,1,Gastos indirectos,Indirectos,4680000.0,0.75
+9,2,Obras preliminares,Mano de obra,8600000.0,1.0
+10,2,Cimientos,Materiales,30100000.0,1.0
+11,2,Estructura y paredes,Materiales,55900000.0,0.65
+12,2,Techos,Materiales,25800000.0,0.2
+13,2,Instalación eléctrica,Subcontratos,21500000.0,0.15
+14,2,Instalación mecánica,Subcontratos,17200000.0,0.1
+15,2,Acabados,Materiales,43000000.0,0.0
+16,2,Gastos indirectos,Indirectos,12900000.0,0.5
+17,3,Obras preliminares,Mano de obra,1680000.0,1.0
+18,3,Cimientos,Materiales,5880000.0,1.0
+19,3,Estructura y paredes,Materiales,10920000.0,1.0
+20,3,Techos,Materiales,5040000.0,1.0
+21,3,Instalación eléctrica,Subcontratos,4200000.0,0.85
+22,3,Instalación mecánica,Subcontratos,3360000.0,0.8
+23,3,Acabados,Materiales,8400000.0,0.6
+24,3,Gastos indirectos,Indirectos,2520000.0,0.85
+25,4,Obras preliminares,Mano de obra,13600000.0,0.8
+26,4,Cimientos,Materiales,47600000.0,0.25
+27,4,Estructura y paredes,Materiales,88400000.0,0.0
+28,4,Techos,Materiales,40800000.0,0.0
+29,4,Instalación eléctrica,Subcontratos,34000000.0,0.0
+30,4,Instalación mecánica,Subcontratos,27200000.0,0.0
+31,4,Acabados,Materiales,68000000.0,0.0
+32,4,Gastos indirectos,Indirectos,20400000.0,0.1
+33,3,Reparación de fuga,Sin presupuestar,0.0,0.0
