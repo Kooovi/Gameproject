@@ -87,6 +87,12 @@ def grafico_presupuesto_vs_gasto(df: pd.DataFrame, etiqueta: str):
     st.caption("Barra azul = gastado · Marca gris = presupuesto")
 
 
+def plantilla_excel() -> bytes:
+    archivo = io.BytesIO()
+    importar.escribir_excel(demo.generar(), archivo)
+    return archivo.getvalue()
+
+
 def cargar_demo(con):
     limpios, _, _ = importar.validar(demo.generar())
     importar.cargar(con, limpios)
@@ -202,9 +208,11 @@ with tab_obra:
     st.caption(f"{len(gastos)} gastos · total {colones(gastos['Monto'].sum())}")
     st.dataframe(gastos.style.format({"Monto": colones}, na_rep="—"), hide_index=True, width="stretch")
 
+    # Se pasa una función (lambda) en vez del archivo: Streamlit solo la ejecuta
+    # cuando alguien presiona el botón, en vez de armar el Excel en cada clic de la app.
     st.download_button(
         "Descargar reporte de esta obra (.xlsx)",
-        exportar.reporte_obra_excel(obra, de_la_obra, gastos),
+        lambda: exportar.reporte_obra_excel(obra, de_la_obra, gastos),
         f"reporte_{obra['obra_codigo']}.xlsx",
     )
 
@@ -321,9 +329,7 @@ with tab_datos:
     st.subheader("1. Descargá la plantilla")
     st.write("Es un Excel con tres hojas (**Obras**, **Presupuesto** y **Gastos**) que ya trae "
              "los datos de ejemplo. Borrá las filas de ejemplo y poné las tuyas, sin cambiar los encabezados.")
-    plantilla = io.BytesIO()
-    importar.escribir_excel(demo.generar(), plantilla)
-    st.download_button("Descargar plantilla (.xlsx)", plantilla.getvalue(), "plantilla_costos.xlsx")
+    st.download_button("Descargar plantilla (.xlsx)", plantilla_excel, "plantilla_costos.xlsx")
 
     st.subheader("2. Subí tu archivo")
     st.warning("Al cargar un archivo se **reemplazan** todos los datos que hay ahora.")
@@ -349,7 +355,10 @@ with tab_datos:
     st.subheader("3. Respaldá tus datos")
     st.write("Descarga todo lo que hay en la herramienta (incluidos los gastos y avances registrados aquí) "
              "en el mismo formato de la plantilla. Ese archivo se puede volver a subir.")
-    st.download_button("Descargar respaldo (.xlsx)", exportar.respaldo_excel(con), "respaldo_costos.xlsx")
+    # La función corre en otro hilo, y una conexión de SQLite no se puede compartir
+    # entre hilos: por eso abre su propia conexión con db.conectar().
+    st.download_button("Descargar respaldo (.xlsx)", lambda: exportar.respaldo_excel(db.conectar()),
+                       "respaldo_costos.xlsx")
 
     st.subheader("Volver a los datos de ejemplo")
     if st.button("Restaurar datos de ejemplo (ficticios)"):
