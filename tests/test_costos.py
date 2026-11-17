@@ -222,3 +222,21 @@ def test_las_soluciones_de_la_practica_corren_y_devuelven_filas():
     importar.cargar(con, limpios)
     for numero, solucion in soluciones.items():
         assert con.execute(solucion["sql"]).fetchall(), f"la solución {numero} no devuelve filas"
+
+
+def test_las_soluciones_de_pandas_pasan_su_propio_revisor():
+    import sys
+    sys.path.insert(0, str(db.RAIZ / "practica"))
+    import pandas_ejercicios
+    import pandas_soluciones
+    import revisar_pandas
+
+    tablas = revisar_pandas.cargar_tablas()
+    for numero in range(1, revisar_pandas.TOTAL + 1):
+        esperado = getattr(pandas_soluciones, f"ej{numero}")(*(t.copy() for t in tablas))
+        assert revisar_pandas.comparar(esperado, esperado) is None
+        # Los ejercicios se entregan sin resolver.
+        assert getattr(pandas_ejercicios, f"ej{numero}")(*tablas) is None
+    # El reto no cae en la trampa de duplicar el presupuesto.
+    reto = pandas_soluciones.ej12(*tablas).set_index("codigo")
+    assert reto.loc["OB-01", "presupuesto"] == 78_000_000

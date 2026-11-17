@@ -69,3 +69,34 @@ sqlite> .quit
 
 Nota: esto es SQLite. Casi todo es igual en PostgreSQL, MySQL o SQL Server; lo que más
 cambia son las funciones de fecha (`strftime` es propia de SQLite).
+
+---
+
+# Práctica de pandas
+
+12 ejercicios con **las mismas preguntas** que la práctica de SQL, para aprender a
+traducir de un lenguaje al otro. Conviene hacer primero la de SQL.
+
+1. Abrí `practica/pandas_ejercicios.py` y completá una función (cambiá el `return None`).
+2. Revisá:
+
+   ```bash
+   python practica/revisar_pandas.py        # todos
+   python practica/revisar_pandas.py 4      # ver qué devuelve tu ej4
+   ```
+
+Las soluciones están en `practica/pandas_soluciones.py`, cada una con su SQL equivalente.
+
+| SQL | pandas |
+|---|---|
+| `WHERE monto > 100` | `df[df["monto"] > 100]` |
+| `ORDER BY monto DESC` | `df.sort_values("monto", ascending=False)` |
+| `LIMIT 5` | `df.head(5)` o `df.nlargest(5, "monto")` |
+| `GROUP BY x` + `SUM(y)` | `df.groupby("x", as_index=False).agg(total=("y", "sum"))` |
+| `HAVING` | filtrar el resultado del `groupby` |
+| `JOIN` | `a.merge(b, on="clave")` |
+| `LEFT JOIN` | `a.merge(b, on="clave", how="left")` |
+| `CASE WHEN` | `np.select([condiciones], [resultados], default=...)` |
+| `SUM() OVER (ORDER BY ...)` | `.cumsum()` |
+| `LAG()` | `.shift()` o `.diff()` |
+| Tabla dinámica de Excel | `df.pivot_table(index=, columns=, values=, aggfunc=)` |

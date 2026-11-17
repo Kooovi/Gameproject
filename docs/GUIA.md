@@ -139,14 +139,16 @@ lo carga y comprueba que **lo que suma SQL es igual a sumar la hoja de gastos di
 
 ## 9. Para practicar
 
-En la carpeta `practica/` hay 20 ejercicios de SQL sobre esta base, con soluciones.
-Además, estos retos sobre el código (de más fácil a más difícil):
+En la carpeta `practica/` hay 20 ejercicios de SQL y 12 de pandas sobre esta misma base,
+con soluciones comentadas y un revisor automático. Ver `practica/README.md`.
 
-1. **SQL**: escribí una consulta que dé el total gastado por `categoria` en cada obra.
-2. **SQL**: listá las partidas que no tienen ningún gasto (pista: `LEFT JOIN` + `WHERE g.id IS NULL`).
-3. **SQL**: el gasto más grande de cada obra (pista: `ROW_NUMBER() OVER (PARTITION BY ...)`).
-4. **pandas**: en `calculos.py`, agregá la columna `cpi` = costo esperado ÷ gastado, y una prueba.
-5. **Streamlit**: agregá en "Detalle por obra" un gráfico del gasto por categoría.
+Cuando los terminés, estos retos son sobre el código del proyecto:
+
+1. **pandas**: en `calculos.py`, agregá la columna `cpi` = costo esperado ÷ gastado, y una prueba.
+2. **SQL + Streamlit**: agregá en "Detalle por obra" un gráfico del gasto por categoría
+   (consulta nueva en `sql/` y gráfico en `streamlit_app.py`).
+3. **Todo junto**: permitir borrar un gasto desde la herramienta (función en `registro.py`,
+   prueba, y botón en la interfaz).
 
 Para probar consultas a mano:
 

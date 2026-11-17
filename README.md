@@ -30,6 +30,8 @@ avance y proyecta cuánto costará al terminar.
 - **Gastos sin presupuestar**: si aparece un gasto en una partida que no estaba en el
   presupuesto, lo carga con presupuesto 0 y lo marca en rojo.
 
+![Registro de gastos](docs/img/registrar.png)
+
 ## Estado del proyecto
 
 Siendo honesto sobre lo que hay y lo que falta:
@@ -39,7 +41,8 @@ Siendo honesto sobre lo que hay y lo que falta:
 - ⏳ **Todavía no se ha probado con datos reales de una constructora.** Es el siguiente paso.
 - ⏳ No tiene usuarios ni contraseñas, y no se puede editar ni borrar un gasto ya registrado
   (hay que corregirlo en el Excel de respaldo y volver a cargarlo).
-- ⏳ No está publicada en internet; por ahora corre en la computadora de quien la usa.
+- ⏳ No está publicada en internet; por ahora corre en la computadora de quien la usa
+  (ver `docs/PUBLICAR.md`).
 
 ## Cómo correrlo
 
@@ -80,7 +83,8 @@ costos/
 sql/                  Una consulta por archivo, comentada
 tests/                Pruebas automáticas
 docs/GUIA.md          Explicación del código, paso a paso
-practica/             Ejercicios de SQL sobre esta misma base, con soluciones
+docs/PUBLICAR.md      Cómo publicarla y qué limitaciones tiene
+practica/             Ejercicios de SQL y pandas sobre esta misma base, con revisor
 ```
 
 ### Indicadores
