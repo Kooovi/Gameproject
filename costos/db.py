@@ -15,8 +15,13 @@ CARPETA_SQL = RAIZ / "sql"
 RUTA_ESQUEMA = Path(__file__).resolve().parent / "esquema.sql"
 
 
-def conectar(ruta=RUTA_DB) -> sqlite3.Connection:
-    """Abre la base (la crea si no existe) y se asegura de que tenga las tablas."""
+def conectar(ruta=None) -> sqlite3.Connection:
+    """Abre la base (la crea si no existe) y se asegura de que tenga las tablas.
+
+    Sin ruta usa RUTA_DB. Se lee al momento de llamar (y no como valor por defecto
+    del parámetro) para que las pruebas puedan apuntar a una base temporal.
+    """
+    ruta = RUTA_DB if ruta is None else ruta
     if str(ruta) != ":memory:":
         Path(ruta).parent.mkdir(parents=True, exist_ok=True)
     con = sqlite3.connect(ruta)
