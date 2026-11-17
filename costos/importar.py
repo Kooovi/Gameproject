@@ -41,6 +41,20 @@ def _texto(serie: pd.Series) -> pd.Series:
     return limpio.where(limpio != "")
 
 
+def _fechas(serie: pd.Series) -> pd.Series:
+    """Convierte a fecha. Lo que no se pueda leer queda vacío (NaT).
+
+    Si Excel ya trae la celda como fecha, se respeta. Si viene como texto, se
+    prueba primero AAAA-MM-DD (inequívoco) y después día/mes/año, que es como
+    se escribe en Costa Rica: "03/04/2026" es 3 de abril, no 4 de marzo.
+    """
+    if pd.api.types.is_datetime64_any_dtype(serie):
+        return serie
+    iso = pd.to_datetime(serie, format="%Y-%m-%d", errors="coerce")
+    dia_primero = pd.to_datetime(serie, format="mixed", dayfirst=True, errors="coerce")
+    return iso.fillna(dia_primero)
+
+
 def validar(datos: dict[str, pd.DataFrame]):
     """Limpia y revisa los datos. Devuelve (datos_limpios, errores, avisos)."""
     errores, avisos, limpios = [], [], {}
@@ -92,11 +106,10 @@ def validar(datos: dict[str, pd.DataFrame]):
     error("Gastos", gastos.loc[gastos["monto"].isna(), "fila"], "el monto debe ser un número")
 
     # --- Fechas ---------------------------------------------------------------
-    # dayfirst=True: si la fecha viene como texto, se lee día/mes/año (formato de CR).
-    gastos["fecha"] = pd.to_datetime(gastos["fecha"], errors="coerce", dayfirst=True)
+    gastos["fecha"] = _fechas(gastos["fecha"])
     error("Gastos", gastos.loc[gastos["fecha"].isna(), "fila"], "la fecha está vacía o no es válida")
     for c in ("fecha_inicio", "fecha_fin_prevista"):
-        obras[c] = pd.to_datetime(obras[c], errors="coerce", dayfirst=True)
+        obras[c] = _fechas(obras[c])
 
     # --- Duplicados -----------------------------------------------------------
     error("Obras", obras.loc[obras["codigo"].duplicated() & obras["codigo"].notna(), "fila"],

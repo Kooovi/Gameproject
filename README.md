@@ -23,6 +23,10 @@ avance y proyecta cuánto costará al terminar.
   lista de gastos.
 - **Carga desde Excel**: se descarga una plantilla, se llena y se sube. Si el archivo
   trae errores, dice en qué hoja y en qué fila están, y no carga nada a medias.
+- **Registro del día a día**: formulario para anotar un gasto y tabla para actualizar el
+  avance de las partidas, sin volver a subir el Excel.
+- **Salidas a Excel**: reporte de una obra (resumen, partidas y gastos) y respaldo completo
+  de los datos, que se puede volver a cargar.
 - **Gastos sin presupuestar**: si aparece un gasto en una partida que no estaba en el
   presupuesto, lo carga con presupuesto 0 y lo marca en rojo.
 
@@ -33,8 +37,9 @@ Siendo honesto sobre lo que hay y lo que falta:
 - ✅ Funciona de punta a punta con datos de ejemplo y tiene pruebas automáticas.
 - ⚠️ **Los datos incluidos son ficticios** (obras, clientes, proveedores y montos inventados).
 - ⏳ **Todavía no se ha probado con datos reales de una constructora.** Es el siguiente paso.
-- ⏳ No tiene usuarios ni contraseñas, y los datos solo se cargan desde Excel
-  (no hay formulario para digitar un gasto suelto).
+- ⏳ No tiene usuarios ni contraseñas, y no se puede editar ni borrar un gasto ya registrado
+  (hay que corregirlo en el Excel de respaldo y volver a cargarlo).
+- ⏳ No está publicada en internet; por ahora corre en la computadora de quien la usa.
 
 ## Cómo correrlo
 
@@ -69,10 +74,13 @@ costos/
   db.py               Conexión y ejecución de consultas
   calculos.py         Indicadores (pandas)
   importar.py         Excel -> validación -> base de datos
+  registro.py         Registrar un gasto y actualizar avances
+  exportar.py         Reporte por obra y respaldo en Excel
   demo.py             Generador de datos ficticios
 sql/                  Una consulta por archivo, comentada
 tests/                Pruebas automáticas
 docs/GUIA.md          Explicación del código, paso a paso
+practica/             Ejercicios de SQL sobre esta misma base, con soluciones
 ```
 
 ### Indicadores
@@ -104,8 +112,8 @@ Tres hojas. Las columnas en **negrita** son obligatorias.
 ## Próximos pasos
 
 1. Probarlo con el Excel real de una obra ya terminada y ajustar lo que no calce.
-2. Formulario para registrar gastos sin pasar por Excel.
-3. Exportar el reporte de una obra a PDF o Excel.
+2. Editar y borrar gastos desde la herramienta.
+3. Publicarla en internet con acceso por usuario.
 
 ## Autor
 

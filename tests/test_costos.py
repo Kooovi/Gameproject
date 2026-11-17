@@ -129,3 +129,96 @@ def test_los_datos_demo_pasan_por_excel_sin_errores():
     assert len(obras) == 4
     # Lo que suma SQL coincide con sumar la hoja de gastos directamente.
     assert obras["gastado"].sum() == pytest.approx(limpios["Gastos"]["monto"].sum())
+
+
+# ---------------------------------------------------------------- registrar y exportar
+
+def _base_minima():
+    con = db.conectar(":memory:")
+    limpios, _, _ = importar.validar(_datos_minimos())
+    importar.cargar(con, limpios)
+    partida_id = int(db.consulta(con, "resumen_partidas").iloc[0]["partida_id"])
+    return con, partida_id
+
+
+def test_agregar_gasto_suma_al_gastado():
+    from datetime import date
+    from costos import registro
+    con, partida_id = _base_minima()
+    registro.agregar_gasto(con, partida_id, date(2026, 4, 1), 100, proveedor="  Ferretería  ")
+    assert db.consulta(con, "resumen_partidas").iloc[0]["gastado"] == 500       # 400 + 100
+    assert con.execute("SELECT proveedor FROM gastos ORDER BY id DESC").fetchone()[0] == "Ferretería"
+
+    with pytest.raises(ValueError):
+        registro.agregar_gasto(con, partida_id, date(2026, 4, 1), 0)
+
+
+def test_actualizar_avances():
+    from costos import registro
+    con, partida_id = _base_minima()
+    registro.actualizar_avances(con, {partida_id: 0.8})
+    assert db.consulta(con, "resumen_partidas").iloc[0]["avance"] == 0.8
+
+    with pytest.raises(ValueError):
+        registro.actualizar_avances(con, {partida_id: 1.5})
+
+
+def test_el_respaldo_se_puede_volver_a_cargar():
+    from costos import exportar
+    con = db.conectar(":memory:")
+    limpios, _, _ = importar.validar(demo.generar())
+    importar.cargar(con, limpios)
+    antes = db.consulta(con, "resumen_partidas")
+
+    respaldo = io.BytesIO(exportar.respaldo_excel(con))
+    limpios, errores, avisos = importar.validar(importar.leer_excel(respaldo))
+    assert errores == [] and avisos == []      # la partida sin presupuestar ya viene en el respaldo
+    otra = db.conectar(":memory:")
+    importar.cargar(otra, limpios)
+    # Se compara todo menos los id internos, que la base vuelve a numerar al cargar.
+    columnas = ["obra_codigo", "partida", "presupuesto", "avance", "gastado", "n_gastos"]
+    orden = ["obra_codigo", "partida"]
+    despues = db.consulta(otra, "resumen_partidas")
+    pd.testing.assert_frame_equal(
+        antes[columnas].sort_values(orden).reset_index(drop=True),
+        despues[columnas].sort_values(orden).reset_index(drop=True),
+    )
+    assert db.consulta(con, "gasto_mensual").equals(db.consulta(otra, "gasto_mensual"))   # mismas fechas
+
+
+def test_reporte_de_obra_tiene_tres_hojas():
+    from costos import exportar
+    con = db.conectar(":memory:")
+    limpios, _, _ = importar.validar(demo.generar())
+    importar.cargar(con, limpios)
+    partidas = calculos.metricas_partidas(db.consulta(con, "resumen_partidas"))
+    obra = calculos.resumen_obras(partidas).iloc[0]
+    de_la_obra = partidas[partidas["obra_id"] == obra["obra_id"]]
+    archivo = exportar.reporte_obra_excel(obra, de_la_obra, db.consulta(con, "gastos_detalle", (int(obra["obra_id"]),)))
+    hojas = pd.read_excel(io.BytesIO(archivo), sheet_name=None)
+    assert list(hojas) == ["Resumen", "Partidas", "Gastos"]
+    assert hojas["Partidas"]["Gastado"].sum() == pytest.approx(obra["gastado"])
+
+
+def test_fechas_en_texto_se_leen_dia_primero():
+    fechas = importar._fechas(pd.Series(["03/04/2026", "2026-04-03", "3-4-2026", "no es fecha", None]))
+    assert list(fechas.dt.strftime("%Y-%m-%d"))[:3] == ["2026-04-03"] * 3
+    assert fechas.isna().tolist() == [False, False, False, True, True]
+
+
+# ---------------------------------------------------------------- práctica de SQL
+
+def test_las_soluciones_de_la_practica_corren_y_devuelven_filas():
+    import sys
+    sys.path.insert(0, str(db.RAIZ / "practica"))
+    import revisar
+
+    soluciones = revisar.leer_ejercicios(db.RAIZ / "practica" / "soluciones.sql")
+    enunciados = revisar.leer_ejercicios(db.RAIZ / "practica" / "ejercicios.sql")
+    assert sorted(soluciones) == sorted(enunciados) == list(range(1, 21))
+
+    con = db.conectar(":memory:")
+    limpios, _, _ = importar.validar(demo.generar())
+    importar.cargar(con, limpios)
+    for numero, solucion in soluciones.items():
+        assert con.execute(solucion["sql"]).fetchall(), f"la solución {numero} no devuelve filas"

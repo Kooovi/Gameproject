@@ -105,7 +105,18 @@ proyección es la estimación al terminar (EAC = presupuesto ÷ CPI).
 - **Transacción**: `with con:` hace que la carga sea todo o nada. Si falla a la mitad, la
   base vuelve a como estaba.
 
-## 6. Las pruebas (`tests/`)
+## 6. Registrar y exportar (`costos/registro.py`, `costos/exportar.py`)
+
+- `agregar_gasto()` y `actualizar_avances()` validan primero y escriben después. Si el dato
+  no sirve lanzan `ValueError`, y la interfaz lo muestra como mensaje de error.
+- `io.BytesIO()` es un archivo en memoria: el Excel se arma ahí y se le entrega al botón de
+  descarga, sin dejar archivos sueltos en el disco.
+- El **respaldo** sale en el mismo formato de la plantilla, así que se puede volver a subir.
+  Hay una prueba que hace justo eso: exporta, vuelve a importar y compara que todo sea igual.
+- En la interfaz, `st.form` evita que la app se vuelva a ejecutar con cada tecla, y
+  `st.session_state` guarda el mensaje de "guardado" para mostrarlo después de recargar.
+
+## 7. Las pruebas (`tests/`)
 
 Cada prueba arma un caso pequeño, calculable a mano, y verifica el resultado con `assert`.
 Sirven para cambiar el código sin miedo: si algo se rompe, `pytest` avisa.
@@ -113,7 +124,7 @@ Sirven para cambiar el código sin miedo: si algo se rompe, `pytest` avisa.
 La última prueba hace el recorrido completo: genera el Excel de ejemplo, lo lee, lo valida,
 lo carga y comprueba que **lo que suma SQL es igual a sumar la hoja de gastos directamente**.
 
-## 7. Preguntas que te pueden hacer
+## 8. Preguntas que te pueden hacer
 
 1. **¿Por qué no lo dejaste en Excel?** Con varias obras, cada una en su archivo, no hay una
    vista de todas juntas, y las fórmulas se rompen al copiar. Aquí los datos están en un
@@ -126,9 +137,10 @@ lo carga y comprueba que **lo que suma SQL es igual a sumar la hoja de gastos di
    es una estimación humana. Con poco avance es poco confiable.
 5. **¿Qué le mejorarías?** Ver "Próximos pasos" en el README.
 
-## 8. Para practicar
+## 9. Para practicar
 
-Ejercicios cortos sobre este mismo proyecto (de más fácil a más difícil):
+En la carpeta `practica/` hay 20 ejercicios de SQL sobre esta base, con soluciones.
+Además, estos retos sobre el código (de más fácil a más difícil):
 
 1. **SQL**: escribí una consulta que dé el total gastado por `categoria` en cada obra.
 2. **SQL**: listá las partidas que no tienen ningún gasto (pista: `LEFT JOIN` + `WHERE g.id IS NULL`).

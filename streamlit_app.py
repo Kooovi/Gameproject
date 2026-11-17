@@ -4,15 +4,19 @@ Este archivo solo dibuja la pantalla. La lógica vive en el paquete costos/:
   - costos/db.py        consultas SQL -> DataFrames
   - costos/calculos.py  indicadores con pandas
   - costos/importar.py  Excel -> validación -> base de datos
+  - costos/registro.py  registrar un gasto / actualizar avances
+  - costos/exportar.py  respaldo y reporte en Excel
 """
 
 import io
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import altair as alt
 import pandas as pd
 import streamlit as st
 
-from costos import calculos, db, demo, importar
+from costos import calculos, db, demo, exportar, importar, registro
 
 AZUL = "#2a78d6"   # lo gastado
 GRIS = "#6f6e69"   # la referencia (presupuesto)
@@ -101,11 +105,20 @@ with st.sidebar:
 partidas = calculos.metricas_partidas(db.consulta(con, "resumen_partidas"), tolerancia)
 obras = calculos.resumen_obras(partidas, tolerancia)
 
+# Mensaje pendiente de una acción anterior (guardar un gasto, por ejemplo).
+# Se guarda en session_state porque st.rerun() vuelve a correr todo el archivo
+# y lo que se haya escrito en pantalla antes se pierde.
+if "mensaje" in st.session_state:
+    st.toast(st.session_state.pop("mensaje"), icon="✅")
+
 st.title("🏗️ Control de costos por obra")
 st.caption("Presupuesto contra gasto real, comparado con el avance de cada partida.")
 
-tab_resumen, tab_obra, tab_datos, tab_ayuda = st.tabs(
-    ["Resumen general", "Detalle por obra", "Cargar datos", "Cómo se calcula"])
+tab_resumen, tab_obra, tab_registrar, tab_datos, tab_ayuda = st.tabs(
+    ["Resumen general", "Detalle por obra", "Registrar", "Cargar datos", "Cómo se calcula"])
+
+# Texto del selector de obra -> id de la obra (lo usan dos pestañas).
+opciones_obra = dict(zip(obras["obra_codigo"] + " · " + obras["obra"], obras["obra_id"]))
 
 # ------------------------------------------------------------------ resumen general
 
@@ -135,8 +148,7 @@ with tab_resumen:
 # ------------------------------------------------------------------ detalle por obra
 
 with tab_obra:
-    opciones = dict(zip(obras["obra_codigo"] + " · " + obras["obra"], obras["obra_id"]))
-    obra_id = int(opciones[st.selectbox("Obra", list(opciones))])
+    obra_id = int(opciones_obra[st.selectbox("Obra", list(opciones_obra))])
     obra = obras[obras["obra_id"] == obra_id].iloc[0]
     de_la_obra = partidas[partidas["obra_id"] == obra_id]
 
@@ -184,6 +196,73 @@ with tab_obra:
     st.caption(f"{len(gastos)} gastos · total {colones(gastos['Monto'].sum())}")
     st.dataframe(gastos.style.format({"Monto": colones}), hide_index=True, width="stretch")
 
+    st.download_button(
+        "Descargar reporte de esta obra (.xlsx)",
+        exportar.reporte_obra_excel(obra, de_la_obra, gastos),
+        f"reporte_{obra['obra_codigo']}.xlsx",
+    )
+
+# ------------------------------------------------------------------ registrar
+
+with tab_registrar:
+    st.caption("Para el día a día: anotar un gasto o actualizar el avance sin volver a subir el Excel.")
+    obra_reg = int(opciones_obra[st.selectbox("Obra", list(opciones_obra), key="obra_registrar")])
+    partidas_reg = partidas[partidas["obra_id"] == obra_reg]
+
+    st.subheader("Nuevo gasto")
+    # st.form agrupa los campos: la app no se vuelve a correr con cada tecla,
+    # solo cuando se presiona el botón.
+    with st.form("nuevo_gasto", clear_on_submit=True):
+        ids = dict(zip(partidas_reg["partida"], partidas_reg["partida_id"]))
+        c1, c2, c3 = st.columns([2, 1, 1])
+        partida_sel = c1.selectbox("Partida", list(ids))
+        # "Hoy" en hora de Costa Rica: un servidor en la nube suele estar en otra zona horaria.
+        hoy = datetime.now(ZoneInfo("America/Costa_Rica")).date()
+        fecha = c2.date_input("Fecha", hoy, format="DD/MM/YYYY")
+        monto = c3.number_input("Monto (₡)", min_value=0.0, step=1000.0, format="%.0f")
+        c1, c2 = st.columns(2)
+        proveedor = c1.text_input("Proveedor")
+        documento = c2.text_input("N.º de factura o documento")
+        descripcion = st.text_input("Descripción")
+        if st.form_submit_button("Guardar gasto", type="primary"):
+            try:
+                registro.agregar_gasto(con, int(ids[partida_sel]), fecha, monto, proveedor, documento, descripcion)
+            except ValueError as e:
+                st.error(str(e))
+            else:
+                st.session_state["mensaje"] = f"Gasto de {colones(monto)} guardado en {partida_sel}."
+                st.rerun()
+
+    st.subheader("Avance de las partidas")
+    st.caption("Cambiá el porcentaje en la columna **Avance %** y guardá.")
+    editable = partidas_reg[["partida_id", "partida", "presupuesto", "gastado"]].assign(
+        avance_pct=(partidas_reg["avance"] * 100).round(1))
+    editado = st.data_editor(
+        editable,
+        hide_index=True,
+        width="stretch",
+        key=f"avances_{obra_reg}",
+        disabled=["partida", "presupuesto", "gastado"],     # solo se puede editar el avance
+        column_config={
+            "partida_id": None,                               # None = columna oculta
+            "partida": "Partida",
+            "presupuesto": st.column_config.NumberColumn("Presupuesto (₡)", format="localized"),
+            "gastado": st.column_config.NumberColumn("Gastado (₡)", format="localized"),
+            "avance_pct": st.column_config.NumberColumn("Avance %", min_value=0, max_value=100, step=1,
+                                                        format="%.0f %%"),
+        },
+    )
+    if st.button("Guardar avances"):
+        # Solo se mandan a la base las partidas cuyo avance cambió.
+        cambios = editado[editado["avance_pct"] != editable["avance_pct"]]
+        if cambios.empty:
+            st.info("No cambiaste ningún avance.")
+        else:
+            registro.actualizar_avances(
+                con, {int(i): a / 100 for i, a in zip(cambios["partida_id"], cambios["avance_pct"])})
+            st.session_state["mensaje"] = f"Avance actualizado en {len(cambios)} partida(s)."
+            st.rerun()
+
 # ------------------------------------------------------------------ cargar datos
 
 with tab_datos:
@@ -214,6 +293,11 @@ with tab_datos:
             if st.button("Cargar estos datos", type="primary"):
                 importar.cargar(con, limpios)
                 st.rerun()
+
+    st.subheader("3. Respaldá tus datos")
+    st.write("Descarga todo lo que hay en la herramienta (incluidos los gastos y avances registrados aquí) "
+             "en el mismo formato de la plantilla. Ese archivo se puede volver a subir.")
+    st.download_button("Descargar respaldo (.xlsx)", exportar.respaldo_excel(con), "respaldo_costos.xlsx")
 
     st.subheader("Volver a los datos de ejemplo")
     if st.button("Restaurar datos de ejemplo (ficticios)"):
