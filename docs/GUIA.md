@@ -111,24 +111,48 @@ proyección es la estimación al terminar (EAC = presupuesto ÷ CPI).
 ## 6. Registrar y exportar (`costos/registro.py`, `costos/exportar.py`)
 
 - `agregar_gasto()`, `actualizar_avances()` y `guardar_cambios_gastos()` validan primero
-  y escriben después. Si el dato
-  no sirve lanzan `ValueError`, y la interfaz lo muestra como mensaje de error.
+  y escriben después. Si el dato no sirve lanzan `ValueError`, y la interfaz lo muestra
+  como mensaje de error.
 - `io.BytesIO()` es un archivo en memoria: el Excel se arma ahí y se le entrega al botón de
   descarga, sin dejar archivos sueltos en el disco.
 - El **respaldo** sale en el mismo formato de la plantilla, así que se puede volver a subir.
   Hay una prueba que hace justo eso: exporta, vuelve a importar y compara que todo sea igual.
 - En la interfaz, `st.form` evita que la app se vuelva a ejecutar con cada tecla, y
   `st.session_state` guarda el mensaje de "guardado" para mostrarlo después de recargar.
+- **Streamlit vuelve a correr todo el archivo en cada clic.** Por eso los botones de
+  descarga reciben una función (`lambda: ...`) en vez del Excel ya armado: así el archivo
+  solo se genera cuando alguien lo pide, y no en cada clic de la app.
 
-## 7. Las pruebas (`tests/`)
+## 7. Alertas y Power BI (`costos/alertas.py`, `costos/powerbi.py`)
+
+Son scripts que se corren desde la terminal (`python -m costos.alertas`). No duplican
+cálculos: llaman a las mismas funciones de `calculos.py` que usa la app, así que los
+números siempre coinciden.
+
+- `argparse` lee las opciones de la terminal (`--actual`, `--tolerancia 5`).
+- `if __name__ == "__main__":` hace que `main()` corra solo cuando el archivo se ejecuta
+  directamente, y no cuando otro archivo lo importa (por ejemplo, las pruebas).
+- La exportación a Power BI incluye `verificacion.csv`: los totales calculados en Python,
+  para comprobar que las medidas DAX dan lo mismo. Ver `powerbi/README.md`.
+
+## 8. Las pruebas (`tests/`)
 
 Cada prueba arma un caso pequeño, calculable a mano, y verifica el resultado con `assert`.
 Sirven para cambiar el código sin miedo: si algo se rompe, `pytest` avisa.
 
-La última prueba hace el recorrido completo: genera el Excel de ejemplo, lo lee, lo valida,
-lo carga y comprueba que **lo que suma SQL es igual a sumar la hoja de gastos directamente**.
+- `tests/test_costos.py` prueba la lógica: cálculos, importación, registro y exportación.
+  Una de las pruebas hace el recorrido completo: genera el Excel de ejemplo, lo lee, lo
+  valida, lo carga y comprueba que **lo que suma SQL es igual a sumar la hoja de gastos**.
+- `tests/test_app.py` prueba la interfaz con `AppTest` de Streamlit: corre la app sin
+  navegador, cambia controles y revisa que no aparezcan errores.
+- `@pytest.mark.parametrize` corre la misma prueba con varios datos (por ejemplo, las
+  distintas formas de escribir un monto).
+- Las pruebas usan bases de datos temporales (`:memory:` o `tmp_path`) y nunca tocan
+  `data/costos.db`.
+- En GitHub corren solas en cada cambio (`.github/workflows/pruebas.yml`). El resultado
+  se ve en la pestaña *Actions* del repositorio.
 
-## 8. Preguntas que te pueden hacer
+## 9. Preguntas que te pueden hacer
 
 1. **¿Por qué no lo dejaste en Excel?** Con varias obras, cada una en su archivo, no hay una
    vista de todas juntas, y las fórmulas se rompen al copiar. Aquí los datos están en un
@@ -141,7 +165,7 @@ lo carga y comprueba que **lo que suma SQL es igual a sumar la hoja de gastos di
    es una estimación humana. Con poco avance es poco confiable.
 5. **¿Qué le mejorarías?** Ver "Próximos pasos" en el README.
 
-## 9. Para practicar
+## 10. Para practicar
 
 En la carpeta `practica/` hay 20 ejercicios de SQL y 12 de pandas sobre esta misma base,
 con soluciones comentadas y un revisor automático. Ver `practica/README.md`.
