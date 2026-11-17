@@ -180,6 +180,11 @@ def validar(datos: dict[str, pd.DataFrame]):
         error(hoja, df.loc[df["obra"].notna() & ~df["obra"].isin(codigos), "fila"],
               "la obra no existe en la hoja Obras")
 
+    for codigo in obras["codigo"].dropna():
+        if codigo not in set(pres["obra"]):
+            avisos.append(f"Obra {codigo}: no tiene partidas en la hoja Presupuesto, "
+                          f"así que no aparecerá en los reportes.")
+
     # Si en Gastos la partida está escrita con otra mayúscula ("techos" y "Techos"),
     # se usa la forma en que aparece en el presupuesto. casefold() es un lower() más estricto.
     forma_oficial = {(obra, str(partida).casefold()): partida

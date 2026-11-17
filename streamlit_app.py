@@ -33,8 +33,13 @@ def colones(x) -> str:
     return f"{'-' if x < 0 else ''}₡{abs(x):,.0f}"
 
 
-def diferencia(x) -> str:
-    """Igual que colones() pero con + explícito, para que st.metric sepa si subió o bajó."""
+def diferencia(x) -> str | None:
+    """Igual que colones() pero con + explícito, para que st.metric sepa si subió o bajó.
+
+    Si la diferencia es menos de ₡1 devuelve None: st.metric no muestra flecha.
+    """
+    if abs(x) < 1:
+        return None
     return f"{'+' if x > 0 else ''}{colones(x)} vs. presupuesto"
 
 
@@ -61,7 +66,7 @@ def tabla(df: pd.DataFrame, columnas: list[str]):
     """Muestra un DataFrame con nombres bonitos y los números con formato."""
     vista = df[columnas].rename(columns=NOMBRES)
     formato = {c: f for c, f in FORMATO.items() if c in vista.columns}
-    st.dataframe(vista.style.format(formato), hide_index=True, width="stretch")
+    st.dataframe(vista.style.format(formato, na_rep="—"), hide_index=True, width="stretch")
 
 
 def grafico_presupuesto_vs_gasto(df: pd.DataFrame, etiqueta: str):
@@ -194,7 +199,7 @@ with tab_obra:
         gastos = gastos[gastos["partida"].isin(filtro)]
     gastos.columns = ["Fecha", "Partida", "Proveedor", "Documento", "Descripción", "Monto"]
     st.caption(f"{len(gastos)} gastos · total {colones(gastos['Monto'].sum())}")
-    st.dataframe(gastos.style.format({"Monto": colones}), hide_index=True, width="stretch")
+    st.dataframe(gastos.style.format({"Monto": colones}, na_rep="—"), hide_index=True, width="stretch")
 
     st.download_button(
         "Descargar reporte de esta obra (.xlsx)",
@@ -258,10 +263,14 @@ with tab_registrar:
         if cambios.empty:
             st.info("No cambiaste ningún avance.")
         else:
-            registro.actualizar_avances(
-                con, {int(i): a / 100 for i, a in zip(cambios["partida_id"], cambios["avance_pct"])})
-            st.session_state["mensaje"] = f"Avance actualizado en {len(cambios)} partida(s)."
-            st.rerun()
+            try:
+                registro.actualizar_avances(
+                    con, {int(i): a / 100 for i, a in zip(cambios["partida_id"], cambios["avance_pct"])})
+            except ValueError as e:              # por ejemplo, una celda que quedó vacía
+                st.error(str(e))
+            else:
+                st.session_state["mensaje"] = f"Avance actualizado en {len(cambios)} partida(s)."
+                st.rerun()
 
 # ------------------------------------------------------------------ cargar datos
 

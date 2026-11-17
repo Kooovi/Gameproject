@@ -280,3 +280,29 @@ def test_excel_sucio_se_carga_igual():
     assert partidas.loc["Cimientos", ["presupuesto", "avance", "gastado"]].tolist() == [1_000_000, 0.5, 400_000]
     assert partidas.loc["Techos", ["presupuesto", "avance", "gastado"]].tolist() == [500_000, 0.25, 100_000.5]
     assert con.execute("SELECT descripcion FROM gastos ORDER BY id").fetchall() == [("Cemento",), ("Láminas",)]
+
+
+def test_archivo_sin_gastos_y_obra_sin_partidas():
+    datos = {
+        "Obras": pd.DataFrame({"codigo": ["A", "B"], "nombre": ["Obra A", "Obra B"]}),
+        "Presupuesto": pd.DataFrame({"obra": ["A"], "partida": ["Cimientos"], "presupuesto": [1000]}),
+        "Gastos": pd.DataFrame(columns=["fecha", "obra", "partida", "monto"]),      # hoja vacía
+    }
+    limpios, errores, avisos = importar.validar(datos)
+    assert errores == []
+    assert len(avisos) == 1 and "Obra B" in avisos[0]
+
+    con = db.conectar(":memory:")
+    importar.cargar(con, limpios)
+    partidas = calculos.metricas_partidas(db.consulta(con, "resumen_partidas"))
+    obra = calculos.resumen_obras(partidas).iloc[0]
+    assert (obra["gastado"], obra["proyeccion"], obra["estado"]) == (0, 1000, calculos.EN_PRESUPUESTO)
+    assert db.consulta(con, "gasto_mensual").empty
+
+
+def test_avance_vacio_no_se_guarda():
+    from costos import registro
+    con, partida_id = _base_minima()
+    with pytest.raises(ValueError):
+        registro.actualizar_avances(con, {partida_id: float("nan")})
+    assert db.consulta(con, "resumen_partidas").iloc[0]["avance"] == 0.5        # quedó como estaba
