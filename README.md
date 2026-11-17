@@ -91,6 +91,7 @@ docs/GUIA.md          Explicación del código, paso a paso
 docs/PUBLICAR.md      Cómo publicarla y qué limitaciones tiene
 docs/PARA_LA_CONSTRUCTORA.md  Cómo probarla con datos de una obra real
 docs/AUTOMATIZAR.md   Programar el resumen de alertas con cron
+docs/ENTREVISTA.md    Cómo presentar el proyecto (español e inglés)
 practica/             Ejercicios de SQL y pandas sobre esta misma base, con revisor
 powerbi/              Datos en CSV y guía para armar el tablero en Power BI (DAX)
 ```
