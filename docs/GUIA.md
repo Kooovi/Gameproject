@@ -110,7 +110,8 @@ proyección es la estimación al terminar (EAC = presupuesto ÷ CPI).
 
 ## 6. Registrar y exportar (`costos/registro.py`, `costos/exportar.py`)
 
-- `agregar_gasto()` y `actualizar_avances()` validan primero y escriben después. Si el dato
+- `agregar_gasto()`, `actualizar_avances()` y `guardar_cambios_gastos()` validan primero
+  y escriben después. Si el dato
   no sirve lanzan `ValueError`, y la interfaz lo muestra como mensaje de error.
 - `io.BytesIO()` es un archivo en memoria: el Excel se arma ahí y se le entrega al botón de
   descarga, sin dejar archivos sueltos en el disco.
@@ -150,8 +151,8 @@ Cuando los terminés, estos retos son sobre el código del proyecto:
 1. **pandas**: en `calculos.py`, agregá la columna `cpi` = costo esperado ÷ gastado, y una prueba.
 2. **SQL + Streamlit**: agregá en "Detalle por obra" un gráfico del gasto por categoría
    (consulta nueva en `sql/` y gráfico en `streamlit_app.py`).
-3. **Todo junto**: permitir borrar un gasto desde la herramienta (función en `registro.py`,
-   prueba, y botón en la interfaz).
+3. **Todo junto**: permitir cambiar la partida de un gasto ya registrado desde la tabla
+   de corrección (hoy esa columna está bloqueada). Función en `registro.py`, prueba e interfaz.
 
 Para probar consultas a mano:
 

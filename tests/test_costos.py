@@ -326,3 +326,34 @@ def test_exportacion_powerbi(tmp_path):
     assert calendario["fecha"].is_unique
     assert verificacion.loc["TOTAL", "gastado"] == pytest.approx(gastos["monto"].sum())
     assert verificacion.loc["OB-01", "presupuesto"] == 78_000_000
+
+
+def test_corregir_y_borrar_gastos():
+    from datetime import date
+    from costos import registro
+    con, partida_id = _base_minima()
+    nuevo = registro.agregar_gasto(con, partida_id, date(2026, 4, 1), 100)
+    original = int(con.execute("SELECT MIN(id) FROM gastos").fetchone()[0])
+
+    registro.guardar_cambios_gastos(
+        con,
+        [{"gasto_id": original, "fecha": date(2026, 3, 20), "proveedor": " Nuevo ",
+          "documento": None, "descripcion": float("nan"), "monto": 450}],
+        borrar=[nuevo],
+    )
+    filas = con.execute("SELECT id, fecha, proveedor, descripcion, monto FROM gastos").fetchall()
+    assert filas == [(original, "2026-03-20", "Nuevo", None, 450)]
+
+    # Si una fila es inválida no se aplica nada, ni siquiera los borrados.
+    with pytest.raises(ValueError):
+        registro.guardar_cambios_gastos(
+            con, [{"gasto_id": original, "fecha": None, "proveedor": "", "documento": "",
+                   "descripcion": "", "monto": 450}], borrar=[original])
+    assert con.execute("SELECT COUNT(*) FROM gastos").fetchone()[0] == 1
+
+    # Celdas borradas en la tabla de la app llegan como NaT / NaN.
+    for fecha, monto in ((pd.NaT, 450), (date(2026, 3, 20), float("nan"))):
+        with pytest.raises(ValueError):
+            registro.guardar_cambios_gastos(
+                con, [{"gasto_id": original, "fecha": fecha, "proveedor": "", "documento": "",
+                       "descripcion": "", "monto": monto}], borrar=[])

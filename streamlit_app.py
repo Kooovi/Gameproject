@@ -238,6 +238,48 @@ with tab_registrar:
                 st.session_state["mensaje"] = f"Gasto de {colones(monto)} guardado en {partida_sel}."
                 st.rerun()
 
+    st.subheader("Corregir o borrar gastos")
+    st.caption("Cambiá las celdas que quieras o marcá **Borrar**, y después guardá. "
+               "No se aplica nada hasta presionar el botón.")
+    originales = db.consulta(con, "gastos_editables", (obra_reg,))
+    originales["fecha"] = pd.to_datetime(originales["fecha"]).dt.date
+    originales.insert(0, "borrar", False)
+    editados = st.data_editor(
+        originales,
+        hide_index=True,
+        width="stretch",
+        key=f"gastos_{obra_reg}",
+        disabled=["gasto_id", "partida"],
+        column_config={
+            "borrar": st.column_config.CheckboxColumn("Borrar", width="small"),
+            "gasto_id": None,
+            "fecha": st.column_config.DateColumn("Fecha", format="DD/MM/YYYY"),
+            "partida": "Partida",
+            "proveedor": "Proveedor",
+            "documento": "Documento",
+            "descripcion": "Descripción",
+            "monto": st.column_config.NumberColumn("Monto (₡)", format="localized", min_value=0),
+        },
+    )
+    if st.button("Guardar cambios en gastos"):
+        a_borrar = editados.loc[editados["borrar"], "gasto_id"].tolist()
+        # Una fila cambió si alguna de sus columnas es distinta a la original.
+        # fillna("") para que dos celdas vacías cuenten como iguales.
+        columnas = ["fecha", "proveedor", "documento", "descripcion", "monto"]
+        distinta = (editados[columnas].fillna("") != originales[columnas].fillna("")).any(axis=1)
+        cambiados = editados[distinta & ~editados["borrar"]]
+        if not a_borrar and cambiados.empty:
+            st.info("No hiciste ningún cambio.")
+        else:
+            try:
+                registro.guardar_cambios_gastos(con, cambiados.to_dict("records"), a_borrar)
+            except ValueError as e:
+                st.error(str(e))
+            else:
+                st.session_state["mensaje"] = (f"{len(cambiados)} gasto(s) corregido(s) "
+                                               f"y {len(a_borrar)} borrado(s).")
+                st.rerun()
+
     st.subheader("Avance de las partidas")
     st.caption("Cambiá el porcentaje en la columna **Avance %** y guardá.")
     editable = partidas_reg[["partida_id", "partida", "presupuesto", "gastado"]].assign(

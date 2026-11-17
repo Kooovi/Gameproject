@@ -25,8 +25,8 @@ avance y proyecta cuánto costará al terminar.
   lista de gastos.
 - **Carga desde Excel**: se descarga una plantilla, se llena y se sube. Si el archivo
   trae errores, dice en qué hoja y en qué fila están, y no carga nada a medias.
-- **Registro del día a día**: formulario para anotar un gasto y tabla para actualizar el
-  avance de las partidas, sin volver a subir el Excel.
+- **Registro del día a día**: formulario para anotar un gasto, tabla para corregir o
+  borrar gastos y tabla para actualizar el avance de las partidas, sin volver a subir el Excel.
 - **Salidas a Excel**: reporte de una obra (resumen, partidas y gastos) y respaldo completo
   de los datos, que se puede volver a cargar.
 - **Gastos sin presupuestar**: si aparece un gasto en una partida que no estaba en el
@@ -41,8 +41,7 @@ Siendo honesto sobre lo que hay y lo que falta:
 - ✅ Funciona de punta a punta con datos de ejemplo y tiene pruebas automáticas.
 - ⚠️ **Los datos incluidos son ficticios** (obras, clientes, proveedores y montos inventados).
 - ⏳ **Todavía no se ha probado con datos reales de una constructora.** Es el siguiente paso.
-- ⏳ No tiene usuarios ni contraseñas, y no se puede editar ni borrar un gasto ya registrado
-  (hay que corregirlo en el Excel de respaldo y volver a cargarlo).
+- ⏳ No tiene usuarios ni contraseñas, ni historial de quién cambió qué.
 - ⏳ No está publicada en internet; por ahora corre en la computadora de quien la usa
   (ver `docs/PUBLICAR.md`).
 
@@ -130,7 +129,7 @@ Lo que no puede adivinar lo reporta como error, con hoja y fila.
 ## Próximos pasos
 
 1. Probarlo con el Excel real de una obra ya terminada y ajustar lo que no calce.
-2. Editar y borrar gastos desde la herramienta.
+2. Historial de cambios (quién registró o corrigió cada gasto).
 3. Publicarla en internet con acceso por usuario.
 
 ## Autor
