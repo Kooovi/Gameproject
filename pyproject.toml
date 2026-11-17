@@ -1,0 +1,6 @@
+# Configuración de pytest.
+# pythonpath = ["."] hace que las pruebas encuentren el paquete costos/
+# al correr "pytest" desde la carpeta del proyecto.
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
